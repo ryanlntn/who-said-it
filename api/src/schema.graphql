@@ -1,0 +1,26 @@
+type Game {
+  id: ID!
+}
+
+type Player {
+  name: ID!
+  avatar: String
+  answers: [Answer] @relation(name: "ANSWERED", direction: "OUT")
+}
+
+type Answer {
+  id: ID!
+  player: Player @relation(name: "ANSWERED", direction: "IN")
+  question: Quote @relation(name: "ASKED", direction: "IN")
+  answer: String
+}
+
+type Quote {
+  text: ID!
+  quotee: String
+  answers: [Answer] @relation(name: "ASKED", direction: "OUT")
+}
+
+type Query {
+  quotesByQuoteeSubstring(substring: String, first: Int = 10, offset: Int = 0): [Quote] @cypher(statement: "MATCH (q:Quote) WHERE q.quotee CONTAINS $substring RETURN DISTINCT q")
+}
